@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FairGuard AI — Detect, understand, and fix hidden bias in AI datasets and models.">
+    <title>FairGuard AI — Bias Detection Dashboard</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+<div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">🛡️</div>
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-page="dashboard" id="nav-dashboard">
+                📊<span class="tooltip">Dashboard</span>
+            </button>
+            <button class="nav-item" data-page="upload" id="nav-upload">
+                📁<span class="tooltip">Upload Dataset</span>
+            </button>
+            <button class="nav-item" data-page="analysis" id="nav-analysis">
+                🔍<span class="tooltip">Bias Analysis</span>
+            </button>
+            <button class="nav-item" data-page="counterfactual" id="nav-counterfactual">
+                🔄<span class="tooltip">What-If Analysis</span>
+            </button>
+            <button class="nav-item" data-page="reports" id="nav-reports">
+                📄<span class="tooltip">Reports</span>
+            </button>
+            <button class="nav-item" data-page="settings" id="nav-settings">
+                ⚙️<span class="tooltip">Settings</span>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <h1 class="header-title" id="page-title">Dashboard</h1>
+            <div class="header-actions">
+                <span class="header-badge" id="dataset-badge">No Dataset Loaded</span>
+                <button class="btn btn-primary btn-sm" onclick="FairGuard.showPage('upload')">+ Upload Data</button>
+            </div>
+        </header>
+
+        <!-- Dashboard Page -->
+        <div class="page-container" id="page-dashboard">
+            <div class="stats-grid">
+                <div class="stat-card blue"><div class="stat-icon">📊</div><div class="stat-value" id="stat-datasets">0</div><div class="stat-label">Datasets Scanned</div></div>
+                <div class="stat-card cyan"><div class="stat-icon">🤖</div><div class="stat-value" id="stat-analyses">0</div><div class="stat-label">Analyses Run</div></div>
+                <div class="stat-card green"><div class="stat-icon">✅</div><div class="stat-value" id="stat-reports">0</div><div class="stat-label">Reports Generated</div></div>
+                <div class="stat-card red"><div class="stat-icon">⚠️</div><div class="stat-value" id="stat-alerts">0</div><div class="stat-label">Bias Alerts</div></div>
+            </div>
+            <div class="split-layout">
+                <div class="glass-card">
+                    <div class="card-header"><h3 class="card-title">📊 Fairness Overview</h3></div>
+                    <div id="dashboard-chart-container" class="chart-container"><canvas id="dashboard-chart"></canvas></div>
+                </div>
+                <div class="glass-card">
+                    <div class="card-header"><h3 class="card-title">🤖 Gemini Insight</h3></div>
+                    <div id="dashboard-gemini" class="gemini-content">
+                        <div class="empty-state"><div class="empty-state-icon">🤖</div>
+                        <div class="empty-state-title">No insights yet</div>
+                        <p>Upload a dataset and run analysis to get AI-powered bias explanations.</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card" style="margin-top:24px">
+                <div class="card-header"><h3 class="card-title">📋 Recent Activity</h3></div>
+                <ul class="activity-list" id="activity-list">
+                    <li class="activity-item"><span class="activity-dot blue"></span><div><div class="activity-text">Welcome to FairGuard AI! Upload a dataset to begin.</div><div class="activity-time">Just now</div></div></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Upload Page -->
+        <div class="page-container page-hidden" id="page-upload">
+            <div class="glass-card">
+                <div class="card-header"><h3 class="card-title">📁 Upload Dataset</h3><button class="btn btn-secondary btn-sm" id="btn-sample-data">📊 Use Sample Dataset</button></div>
+                <div class="upload-zone" id="upload-zone">
+                    <div class="upload-icon">📤</div>
+                    <div class="upload-title">Drag & Drop your CSV file here</div>
+                    <div class="upload-subtitle">or click to browse — Supports CSV files up to 50MB</div>
+                    <input type="file" id="file-input" accept=".csv" style="display:none">
+                </div>
+            </div>
+            <div class="glass-card page-hidden" id="preview-section" style="margin-top:24px">
+                <div class="card-header"><h3 class="card-title">📋 Data Preview</h3><span id="preview-info" class="header-badge"></span></div>
+                <div style="overflow-x:auto"><table class="data-table" id="preview-table"><thead></thead><tbody></tbody></table></div>
+                <div style="margin-top:20px">
+                    <h4 style="margin-bottom:12px">🔒 Detected Protected Attributes</h4>
+                    <div id="protected-attrs-list"></div>
+                </div>
+                <div class="action-bar"><button class="btn btn-primary btn-lg" id="btn-run-analysis">🔍 Run Bias Analysis</button></div>
+            </div>
+        </div>
+
+        <!-- Analysis Page -->
+        <div class="page-container page-hidden" id="page-analysis">
+            <div id="analysis-empty" class="glass-card"><div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-title">No Analysis Available</div><p>Upload a dataset first, then run bias analysis.</p></div></div>
+            <div id="analysis-results" class="page-hidden">
+                <div class="glass-card" style="margin-bottom:24px">
+                    <div class="card-header"><h3 class="card-title">⚙️ Analysis Configuration</h3></div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+                        <div class="form-group"><label class="form-label">Protected Attribute</label><select class="form-select" id="analysis-protected-col"></select></div>
+                        <div class="form-group"><label class="form-label">Label Column</label><select class="form-select" id="analysis-label-col"></select></div>
+                        <div class="form-group"><label class="form-label">Privileged Value</label><select class="form-select" id="analysis-priv-value"></select></div>
+                        <div class="form-group"><label class="form-label">&nbsp;</label><button class="btn btn-primary" id="btn-analyze">🔍 Analyze</button></div>
+                    </div>
+                </div>
+                <div id="analysis-loading" class="loading-overlay page-hidden"><div class="spinner"></div><p>Running bias analysis...</p></div>
+                <div id="analysis-metrics" class="page-hidden">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+                        <h3>📊 Fairness Metrics</h3>
+                        <div id="analysis-risk-badge"></div>
+                    </div>
+                    <div class="metrics-grid" id="metrics-cards"></div>
+                    <div class="split-layout" style="margin-top:24px">
+                        <div class="glass-card"><div class="card-header"><h3 class="card-title">📊 Group Comparison</h3></div><div class="chart-container"><canvas id="group-chart"></canvas></div></div>
+                        <div class="glass-card"><div class="card-header"><h3 class="card-title">📈 Dataset Composition</h3></div><div class="chart-container"><canvas id="composition-chart"></canvas></div></div>
+                    </div>
+                    <div class="glass-card" style="margin-top:24px" id="model-metrics-section"><div class="card-header"><h3 class="card-title">🤖 Model Fairness Metrics</h3></div><div id="model-metrics-content"></div></div>
+                    <div class="gemini-panel" style="margin-top:24px" id="gemini-explanation-panel">
+                        <div class="gemini-header">🤖 Gemini AI Explanation</div>
+                        <div class="api-key-section" id="api-key-section">
+                            <label class="form-label">Enter Gemini API Key</label>
+                            <div class="api-key-input-row"><input type="password" class="form-input" id="gemini-api-key" placeholder="AIza..."><button class="btn btn-primary btn-sm" id="btn-save-key">Save Key</button></div>
+                            <p style="font-size:12px;color:var(--text-muted);margin-top:8px">Get your key at <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a>. Stored locally in your browser.</p>
+                        </div>
+                        <button class="btn btn-primary" id="btn-explain" style="margin-bottom:16px">🤖 Get Gemini Explanation</button>
+                        <div id="gemini-explanation" class="gemini-content"></div>
+                    </div>
+                    <div class="action-bar" style="margin-top:24px">
+                        <button class="btn btn-success" id="btn-mitigate">🔧 Apply Auto-Fix (Reweighing)</button>
+                        <button class="btn btn-secondary" id="btn-mitigate-sampling">🔧 Apply Balanced Sampling</button>
+                        <button class="btn btn-secondary" onclick="FairGuard.showPage('counterfactual')">🔄 What-If Analysis</button>
+                        <button class="btn btn-secondary" onclick="FairGuard.showPage('reports')">📄 Generate Report</button>
+                    </div>
+                    <div id="mitigation-results" class="page-hidden glass-card" style="margin-top:24px">
+                        <div class="card-header"><h3 class="card-title">🔧 Mitigation Results</h3></div>
+                        <div id="mitigation-content"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Counterfactual Page -->
+        <div class="page-container page-hidden" id="page-counterfactual">
+            <div class="glass-card">
+                <div class="card-header"><h3 class="card-title">🔄 Counterfactual / What-If Analysis</h3></div>
+                <p style="color:var(--text-secondary);margin-bottom:20px">Change a protected attribute to see how predictions shift. "What if this applicant were a different gender/race?"</p>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+                    <div class="form-group"><label class="form-label">Protected Attribute</label><select class="form-select" id="cf-protected-col"></select></div>
+                    <div class="form-group"><label class="form-label">Sample Index (row #)</label><input type="number" class="form-input" id="cf-sample-idx" value="0" min="0"></div>
+                    <div class="form-group"><label class="form-label">Change To</label><select class="form-select" id="cf-new-value"></select></div>
+                    <div class="form-group"><label class="form-label">&nbsp;</label><button class="btn btn-primary" id="btn-counterfactual">🔄 Run What-If</button></div>
+                </div>
+            </div>
+            <div id="cf-results" class="page-hidden" style="margin-top:24px">
+                <div class="comparison-grid">
+                    <div class="cf-card original"><div class="cf-label">Original</div><div id="cf-original"></div></div>
+                    <div class="comparison-arrow">→</div>
+                    <div class="cf-card modified"><div class="cf-label">Modified</div><div id="cf-modified"></div></div>
+                </div>
+                <div class="glass-card" style="margin-top:20px"><div class="card-header"><h3 class="card-title">📊 Prediction Shift</h3></div><div class="chart-container"><canvas id="cf-chart"></canvas></div></div>
+            </div>
+        </div>
+
+        <!-- Reports Page -->
+        <div class="page-container page-hidden" id="page-reports">
+            <div class="glass-card">
+                <div class="card-header"><h3 class="card-title">📄 Report Generation</h3></div>
+                <div class="action-bar"><button class="btn btn-primary" id="btn-gen-report">📄 Generate Model Card (Gemini)</button><button class="btn btn-secondary" onclick="window.print()">🖨️ Print / Export PDF</button></div>
+                <div id="report-content" class="gemini-content" style="margin-top:20px"><div class="empty-state"><div class="empty-state-icon">📄</div><div class="empty-state-title">No Report Generated</div><p>Run analysis first, then generate a Gemini-powered Model Card.</p></div></div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div class="page-container page-hidden" id="page-settings">
+            <div class="glass-card">
+                <div class="card-header"><h3 class="card-title">⚙️ Settings</h3></div>
+                <div class="form-group"><label class="form-label">Gemini API Key</label><div class="api-key-input-row"><input type="password" class="form-input" id="settings-api-key" placeholder="AIza..."><button class="btn btn-primary btn-sm" id="btn-settings-save-key">Save</button></div><p style="font-size:12px;color:var(--text-muted);margin-top:8px">Get your key at <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a></p></div>
+                <div class="form-group"><label class="form-label">Backend URL</label><input type="text" class="form-input" id="settings-backend-url" value="http://localhost:8000"></div>
+                <div class="form-group"><label class="form-label">About</label><p style="color:var(--text-secondary)">FairGuard AI v1.0.0 — Responsible AI Bias Detection Platform<br>Built with Google Gemini, AIF360, Fairlearn, FastAPI, and Chart.js</p></div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script src="/static/js/gemini.js"></script>
+<script src="/static/js/api.js"></script>
+<script src="/static/js/charts.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>

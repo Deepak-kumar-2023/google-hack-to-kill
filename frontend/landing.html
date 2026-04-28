@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FairGuard AI — The only bias detection platform that speaks human. Detect, understand, and fix hidden bias in your AI systems.">
+    <title>FairGuard AI — Responsible AI Bias Detection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0a0e1a; --card: rgba(17,24,39,0.7); --glass: rgba(255,255,255,0.03);
+            --blue: #667eea; --purple: #764ba2; --cyan: #00d2ff; --green: #10b981; --red: #ef4444;
+            --text: #f1f5f9; --text2: #94a3b8; --border: rgba(255,255,255,0.06);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        h1,h2,h3,h4 { font-family: 'Space Grotesk', sans-serif; }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; text-align: center; padding: 60px 20px;
+            background: radial-gradient(ellipse at 50% 0%, rgba(102,126,234,0.15) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 50%, rgba(118,75,162,0.1) 0%, transparent 50%),
+                        var(--bg);
+            position: relative;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23667eea' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px;
+            background: rgba(102,126,234,0.1); border: 1px solid rgba(102,126,234,0.2);
+            border-radius: 50px; font-size: 14px; color: var(--blue); margin-bottom: 32px;
+            animation: fadeInUp 0.6s ease;
+        }
+        .hero-title {
+            font-size: clamp(40px, 6vw, 72px); font-weight: 800; line-height: 1.1;
+            margin-bottom: 24px; animation: fadeInUp 0.6s ease 0.1s both;
+        }
+        .hero-title .gradient {
+            background: linear-gradient(135deg, var(--blue), var(--cyan));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero-subtitle {
+            font-size: clamp(16px, 2vw, 20px); color: var(--text2); max-width: 640px;
+            margin-bottom: 40px; line-height: 1.7; animation: fadeInUp 0.6s ease 0.2s both;
+        }
+        .hero-buttons {
+            display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }
+        .btn-hero {
+            padding: 16px 36px; border-radius: 12px; font-size: 16px; font-weight: 600;
+            cursor: pointer; border: none; transition: all 0.3s ease; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 10px;
+        }
+        .btn-hero.primary {
+            background: linear-gradient(135deg, var(--blue), var(--purple)); color: white;
+            box-shadow: 0 8px 30px rgba(102,126,234,0.3);
+        }
+        .btn-hero.primary:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(102,126,234,0.4); }
+        .btn-hero.secondary { background: var(--glass); color: var(--text); border: 1px solid var(--border); }
+        .btn-hero.secondary:hover { background: rgba(255,255,255,0.06); border-color: var(--blue); }
+
+        /* Features */
+        .section { padding: 100px 20px; max-width: 1200px; margin: 0 auto; }
+        .section-title { font-size: 36px; text-align: center; margin-bottom: 16px; }
+        .section-subtitle { text-align: center; color: var(--text2); font-size: 18px; margin-bottom: 60px; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+        .feature-card {
+            background: var(--card); backdrop-filter: blur(20px); border: 1px solid var(--border);
+            border-radius: 16px; padding: 32px; transition: all 0.3s ease;
+        }
+        .feature-card:hover { border-color: rgba(102,126,234,0.3); transform: translateY(-4px); box-shadow: 0 0 30px rgba(102,126,234,0.1); }
+        .feature-icon { font-size: 36px; margin-bottom: 16px; }
+        .feature-title { font-size: 20px; font-weight: 600; margin-bottom: 10px; }
+        .feature-desc { color: var(--text2); font-size: 15px; line-height: 1.7; }
+
+        /* Process */
+        .process-steps { display: flex; flex-direction: column; gap: 32px; max-width: 700px; margin: 0 auto; }
+        .step {
+            display: flex; gap: 20px; align-items: flex-start; padding: 24px;
+            background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+        }
+        .step-num {
+            width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center;
+            justify-content: center; font-weight: 700; font-size: 20px; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--blue), var(--purple)); color: white;
+        }
+        .step-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+        .step-desc { color: var(--text2); font-size: 14px; line-height: 1.6; }
+
+        /* Tech Stack */
+        .tech-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
+        .tech-badge {
+            padding: 10px 24px; background: var(--glass); border: 1px solid var(--border);
+            border-radius: 50px; font-size: 14px; color: var(--text2); transition: all 0.3s ease;
+        }
+        .tech-badge:hover { border-color: var(--blue); color: var(--text); background: rgba(102,126,234,0.1); }
+
+        /* CTA */
+        .cta {
+            text-align: center; padding: 80px 20px;
+            background: radial-gradient(ellipse at 50% 100%, rgba(102,126,234,0.1) 0%, transparent 60%);
+        }
+
+        /* Footer */
+        .footer { text-align: center; padding: 40px 20px; color: var(--text2); font-size: 14px; border-top: 1px solid var(--border); }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { .features-grid { grid-template-columns: 1fr; } .hero-buttons { flex-direction: column; align-items: center; } }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-badge">🛡️ Responsible AI Platform</div>
+        <h1 class="hero-title">Detect Bias.<br>Protect <span class="gradient">Fairness.</span></h1>
+        <p class="hero-subtitle">The only bias detection platform that speaks human. FairGuard AI uses Google Gemini to explain complex bias findings in plain English, so everyone can build fairer AI.</p>
+        <div class="hero-buttons">
+            <a href="/" class="btn-hero primary">🚀 Launch Dashboard</a>
+            <a href="#features" class="btn-hero secondary">Learn More ↓</a>
+        </div>
+    </section>
+
+    <section class="section" id="features">
+        <h2 class="section-title">Powerful Features</h2>
+        <p class="section-subtitle">Everything you need to detect, understand, and eliminate AI bias</p>
+        <div class="features-grid">
+            <div class="feature-card"><div class="feature-icon">📊</div><h3 class="feature-title">Dataset Bias Scanner</h3><p class="feature-desc">Upload any CSV dataset and automatically detect demographic imbalances across gender, race, age, and more. 8+ fairness metrics computed instantly.</p></div>
+            <div class="feature-card"><div class="feature-icon">🤖</div><h3 class="feature-title">Gemini AI Explanations</h3><p class="feature-desc">Google Gemini translates complex metrics into plain English: "Your hiring model is 2.3x more likely to reject female applicants with identical qualifications."</p></div>
+            <div class="feature-card"><div class="feature-icon">🔧</div><h3 class="feature-title">Auto-Mitigation</h3><p class="feature-desc">One-click bias fixes using Reweighing and Balanced Sampling algorithms. See before/after comparisons to verify improvement.</p></div>
+            <div class="feature-card"><div class="feature-icon">🔄</div><h3 class="feature-title">What-If Analysis</h3><p class="feature-desc">Counterfactual testing: "What if this applicant were male?" See exactly how predictions shift when you change protected attributes.</p></div>
+            <div class="feature-card"><div class="feature-icon">📄</div><h3 class="feature-title">Model Card Generator</h3><p class="feature-desc">Auto-generate compliance documentation for GDPR and EU AI Act using Gemini AI. Board-ready reports in seconds, not weeks.</p></div>
+            <div class="feature-card"><div class="feature-icon">🛡️</div><h3 class="feature-title">Fairness Gate CI/CD</h3><p class="feature-desc">Block biased models from reaching production. 5 metric tests must pass before deployment — preventing PR disasters and lawsuits.</p></div>
+        </div>
+    </section>
+
+    <section class="section" id="process">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">From upload to deployment in 5 simple steps</p>
+        <div class="process-steps">
+            <div class="step"><div class="step-num">1</div><div><h3 class="step-title">Upload Your Dataset</h3><p class="step-desc">Drag and drop a CSV file or use our built-in sample hiring dataset with known biases for testing.</p></div></div>
+            <div class="step"><div class="step-num">2</div><div><h3 class="step-title">Automatic Bias Scan</h3><p class="step-desc">FairGuard analyzes your data across all protected attributes — computing Statistical Parity, Disparate Impact, Equal Opportunity, and more.</p></div></div>
+            <div class="step"><div class="step-num">3</div><div><h3 class="step-title">Gemini AI Explanation</h3><p class="step-desc">Google Gemini reads your results and generates a plain-English explanation with specific findings, root causes, and recommended actions.</p></div></div>
+            <div class="step"><div class="step-num">4</div><div><h3 class="step-title">Apply Auto-Fix</h3><p class="step-desc">Choose from Reweighing or Balanced Sampling mitigation strategies. Verify the improvement with before/after metric comparisons.</p></div></div>
+            <div class="step"><div class="step-num">5</div><div><h3 class="step-title">Generate Compliance Report</h3><p class="step-desc">Gemini generates a complete Model Card with ethical considerations, risk assessments, and regulatory compliance notes.</p></div></div>
+        </div>
+    </section>
+
+    <section class="section" id="tech">
+        <h2 class="section-title">Built With Best-in-Class Tech</h2>
+        <p class="section-subtitle">Powered by Google Cloud and open-source fairness libraries</p>
+        <div class="tech-grid">
+            <span class="tech-badge">🤖 Google Gemini 1.5 Pro</span>
+            <span class="tech-badge">☁️ Google Cloud Platform</span>
+            <span class="tech-badge">⚡ FastAPI</span>
+            <span class="tech-badge">📊 AIF360</span>
+            <span class="tech-badge">⚖️ Fairlearn</span>
+            <span class="tech-badge">📈 Chart.js</span>
+            <span class="tech-badge">🐍 Python</span>
+            <span class="tech-badge">🔬 Scikit-learn</span>
+            <span class="tech-badge">🗃️ Pandas</span>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2 class="section-title">Ready to Build Fairer AI?</h2>
+        <p class="section-subtitle">Start detecting bias in your datasets today — it's free.</p>
+        <a href="/" class="btn-hero primary" style="margin-top:20px">🚀 Launch FairGuard AI</a>
+    </section>
+
+    <footer class="footer">
+        <p>🛡️ FairGuard AI — Responsible AI Bias Detection Platform</p>
+        <p style="margin-top:8px">Built for Google Solution Challenge 2025</p>
+    </footer>
+</body>
+</html>
